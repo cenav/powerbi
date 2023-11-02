@@ -1,6 +1,7 @@
-select d.tipodoc, d.serie, d.numero, d.fecha, d.cod_vende, d.cod_cliente, d.cta_pvta, d.moneda
-     , d.import_cam, i.cod_art, i.cantidad, i.precio_de_lista, i.por_desc1, i.por_desc2, i.por_desc3
-     , i.descuento, i.neto
+-- venta
+select d.tipodoc, d.serie, d.numero, d.fecha, d.cod_vende, d.cod_cliente, d.cta_pvta as cuenta
+     , d.moneda, d.import_cam, i.cod_art, i.cantidad, i.precio_de_lista, i.por_desc1, i.por_desc2
+     , i.por_desc3, i.descuento as total_dscto, i.neto
      , decode(d.moneda, 'D', i.neto, round(i.neto / d.import_cam, 2)) as neto_dolar
      , (pr_cos_mes_hdi(i.cod_art, d.fecha, 'D') * i.cantidad) as total_costo_dolar
      , (decode(d.moneda, 'D', i.neto, round(i.neto / d.import_cam, 2)) -
@@ -13,8 +14,7 @@ select d.tipodoc, d.serie, d.numero, d.fecha, d.cod_vende, d.cod_cliente, d.cta_
   from docuvent d
        join itemdocu i on d.tipodoc = i.tipodoc and d.serie = i.serie and d.numero = i.numero
        join clientes c on d.cod_cliente = c.cod_cliente
- where extract(year from d.fecha) = 2023;
-
+ where extract(year from d.fecha) >= 2020;
 
 select *
   from sistabgen
